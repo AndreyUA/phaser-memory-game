@@ -8,11 +8,11 @@ class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    console.log("preload method");
+    this.load.image("bg", "/background.png");
   }
 
   create() {
-    console.log("create method");
+    this.add.sprite(0, 0, "bg").setOrigin(0, 0);
   }
 }
 
