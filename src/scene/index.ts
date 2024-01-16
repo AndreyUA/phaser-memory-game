@@ -14,7 +14,16 @@ export class MainScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.createBackground();
+
+    this.createCards();
+  }
+
+  createBackground(): void {
     this.add.sprite(0, 0, "bg").setOrigin(0, 0);
+  }
+
+  createCards(): void {
     this.getCardPositions().forEach((position) => {
       this.add.sprite(position.x, position.y, "card").setOrigin(0, 0);
     });
