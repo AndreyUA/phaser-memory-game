@@ -1,9 +1,13 @@
 import * as Phaser from "phaser";
 
+import { Card } from "../gameObjects/Card";
+
 const CARD_ROWS = 2;
 const CARD_COLS = 5;
 
 export class MainScene extends Phaser.Scene {
+  cards: Array<Card> = [];
+
   constructor() {
     super({ key: "main" });
   }
@@ -24,8 +28,9 @@ export class MainScene extends Phaser.Scene {
   }
 
   createCards(): void {
+    this.cards = [];
     this.getCardPositions().forEach((position) => {
-      this.add.sprite(position.x, position.y, "card").setOrigin(0, 0);
+      this.cards.push(new Card(this, position));
     });
   }
 
