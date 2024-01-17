@@ -1,6 +1,7 @@
 import * as Phaser from "phaser";
 
 import { Card } from "../gameObjects/Card";
+import { CARDS_ARRAY } from "../constants/cardsArray";
 
 const CARD_ROWS = 2;
 const CARD_COLS = 5;
@@ -15,6 +16,11 @@ export class MainScene extends Phaser.Scene {
   preload(): void {
     this.load.image("bg", "/background.png");
     this.load.image("card", "/card.png");
+    this.load.image("card1", "/card1.png");
+    this.load.image("card2", "/card2.png");
+    this.load.image("card3", "/card3.png");
+    this.load.image("card4", "/card4.png");
+    this.load.image("card5", "/card5.png");
   }
 
   create(): void {
@@ -29,9 +35,15 @@ export class MainScene extends Phaser.Scene {
 
   createCards(): void {
     this.cards = [];
-    this.getCardPositions().forEach((position) => {
-      this.cards.push(new Card(this, position));
-    });
+    const positions = this.getCardPositions();
+
+    // Shuffle the array of positions
+    Phaser.Utils.Array.Shuffle(positions);
+
+    for (const cardId of CARDS_ARRAY) {
+      this.cards.push(new Card(this, cardId, positions.pop()!));
+      this.cards.push(new Card(this, cardId, positions.pop()!));
+    }
   }
 
   getCardPositions(): Array<{ x: number; y: number }> {
