@@ -5,12 +5,8 @@ export class Card extends Phaser.GameObjects.Sprite {
   scene: Phaser.Scene;
   isOpened: boolean = false;
 
-  constructor(
-    scene: Phaser.Scene,
-    cardId: number,
-    position: { x: number; y: number }
-  ) {
-    super(scene, position.x, position.y, "card");
+  constructor(scene: Phaser.Scene, cardId: number) {
+    super(scene, 0, 0, "card");
     this.scene = scene;
     this.setOrigin(0, 0);
     this.scene.add.existing(this);

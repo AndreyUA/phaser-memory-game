@@ -9,6 +9,7 @@ const CARD_COLS = 5;
 export class MainScene extends Phaser.Scene {
   cards: Array<Card> = [];
   openedCard: Card | null = null;
+  openedPairsCardCount: number = 0;
 
   constructor() {
     super({ key: "main" });
@@ -26,8 +27,25 @@ export class MainScene extends Phaser.Scene {
 
   create(): void {
     this.createBackground();
-
     this.createCards();
+    this.start();
+  }
+
+  initCards(): void {
+    const positions = this.getCardPositions();
+
+    this.cards.forEach((card) => {
+      const position = positions.pop()!;
+
+      card.closeCard();
+      card.setPosition(position.x, position.y);
+    });
+  }
+
+  start(): void {
+    this.openedCard = null;
+    this.openedPairsCardCount = 0;
+    this.initCards();
   }
 
   createBackground(): void {
@@ -36,19 +54,19 @@ export class MainScene extends Phaser.Scene {
 
   createCards(): void {
     this.cards = [];
-    const positions = this.getCardPositions();
-
-    // Shuffle the array of positions
-    Phaser.Utils.Array.Shuffle(positions);
 
     for (const cardId of CARDS_ARRAY) {
-      this.cards.push(
-        new Card(this, cardId, positions.pop()!),
-        new Card(this, cardId, positions.pop()!)
-      );
+      this.cards.push(new Card(this, cardId), new Card(this, cardId));
     }
 
-    this.input.on("gameobjectdown", this.onCardLicked, this);
+    this.input.on(
+      "gameobjectdown",
+      (_event: Phaser.Input.Pointer, card: Phaser.GameObjects.Sprite) => {
+        this.onCardLicked(this.input.activePointer, card);
+        this.checkIfGameIsFinished();
+      },
+      this
+    );
   }
 
   onCardLicked(
@@ -76,6 +94,7 @@ export class MainScene extends Phaser.Scene {
     // If there is a saved and opened card before, compare the cards
     if (this.openedCard.cardId === card.cardId) {
       this.openedCard = null;
+      this.openedPairsCardCount++;
     } else {
       this.openedCard.closeCard();
       this.openedCard = card;
@@ -83,6 +102,12 @@ export class MainScene extends Phaser.Scene {
 
     // Open the card
     card.openCard();
+  }
+
+  checkIfGameIsFinished(): void {
+    if (this.openedPairsCardCount === CARDS_ARRAY.length) {
+      this.start();
+    }
   }
 
   getCardPositions(): Array<{ x: number; y: number }> {
@@ -103,6 +128,7 @@ export class MainScene extends Phaser.Scene {
       }
     }
 
-    return positions;
+    // Shuffle the array of positions
+    return Phaser.Utils.Array.Shuffle(positions);
   }
 }
