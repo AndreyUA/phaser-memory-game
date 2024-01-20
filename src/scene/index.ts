@@ -46,6 +46,19 @@ export class MainScene extends Phaser.Scene {
         new Card(this, cardId, positions.pop()!)
       );
     }
+
+    this.input.on("gameobjectdown", this.onCardLicked, this);
+  }
+
+  onCardLicked(
+    _pointer: Phaser.Input.Pointer,
+    card: Phaser.GameObjects.Sprite
+  ): void {
+    if (!(card instanceof Card)) {
+      return;
+    }
+
+    card.openCard();
   }
 
   getCardPositions(): Array<{ x: number; y: number }> {

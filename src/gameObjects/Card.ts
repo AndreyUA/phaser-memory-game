@@ -14,12 +14,8 @@ export class Card extends Phaser.GameObjects.Sprite {
     this.setOrigin(0, 0);
     this.scene.add.existing(this);
     this.cardId = cardId;
-    this.setInteractiveModeAndAddClickListener();
-  }
 
-  setInteractiveModeAndAddClickListener(): void {
     this.setInteractive({ useHandCursor: true });
-    this.on("pointerdown", this.openCard, this);
   }
 
   openCard(): void {
