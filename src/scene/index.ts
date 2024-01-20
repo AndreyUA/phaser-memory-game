@@ -41,8 +41,10 @@ export class MainScene extends Phaser.Scene {
     Phaser.Utils.Array.Shuffle(positions);
 
     for (const cardId of CARDS_ARRAY) {
-      this.cards.push(new Card(this, cardId, positions.pop()!));
-      this.cards.push(new Card(this, cardId, positions.pop()!));
+      this.cards.push(
+        new Card(this, cardId, positions.pop()!),
+        new Card(this, cardId, positions.pop()!)
+      );
     }
   }
 
