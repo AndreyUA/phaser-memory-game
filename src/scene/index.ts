@@ -8,6 +8,7 @@ const CARD_COLS = 5;
 
 export class MainScene extends Phaser.Scene {
   cards: Array<Card> = [];
+  openedCard: Card | null = null;
 
   constructor() {
     super({ key: "main" });
@@ -54,10 +55,33 @@ export class MainScene extends Phaser.Scene {
     _pointer: Phaser.Input.Pointer,
     card: Phaser.GameObjects.Sprite
   ): void {
+    // Filter non-card sprites
     if (!(card instanceof Card)) {
       return;
     }
 
+    // Filter opened cards
+    if (card.isOpened) {
+      return;
+    }
+
+    // If there is no saved and opened card before, open the card
+    if (!this.openedCard) {
+      this.openedCard = card;
+      this.openedCard.openCard();
+
+      return;
+    }
+
+    // If there is a saved and opened card before, compare the cards
+    if (this.openedCard.cardId === card.cardId) {
+      this.openedCard = null;
+    } else {
+      this.openedCard.closeCard();
+      this.openedCard = card;
+    }
+
+    // Open the card
     card.openCard();
   }
 

@@ -3,6 +3,7 @@ import * as Phaser from "phaser";
 export class Card extends Phaser.GameObjects.Sprite {
   cardId: number;
   scene: Phaser.Scene;
+  isOpened: boolean = false;
 
   constructor(
     scene: Phaser.Scene,
@@ -20,5 +21,11 @@ export class Card extends Phaser.GameObjects.Sprite {
 
   openCard(): void {
     this.setTexture(`card${this.cardId}`);
+    this.isOpened = true;
+  }
+
+  closeCard(): void {
+    this.setTexture("card");
+    this.isOpened = false;
   }
 }
