@@ -8,7 +8,6 @@ export class Card extends Phaser.GameObjects.Sprite {
   constructor(scene: Phaser.Scene, cardId: number) {
     super(scene, 0, 0, "card");
     this.scene = scene;
-    this.setOrigin(0, 0);
     this.scene.add.existing(this);
     this.cardId = cardId;
 
@@ -16,12 +15,35 @@ export class Card extends Phaser.GameObjects.Sprite {
   }
 
   openCard(): void {
-    this.setTexture(`card${this.cardId}`);
     this.isOpened = true;
+    this.flipCard(`card${this.cardId}`);
   }
 
   closeCard(): void {
-    this.setTexture("card");
+    this.flipCard("card");
     this.isOpened = false;
+  }
+
+  flipCard(texture: string): void {
+    this.scene.tweens.add({
+      targets: this,
+      scaleX: 0,
+      ease: "Linear",
+      duration: 200,
+      onComplete: () => {
+        this.showCard(texture);
+      },
+    });
+  }
+
+  showCard(texture: string): void {
+    this.setTexture(texture);
+
+    this.scene.tweens.add({
+      targets: this,
+      scaleX: 1,
+      ease: "Linear",
+      duration: 200,
+    });
   }
 }

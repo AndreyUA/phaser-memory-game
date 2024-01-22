@@ -116,8 +116,11 @@ export class MainScene extends Phaser.Scene {
     const cardTexture = this.textures.get("card").getSourceImage();
     const cardWidth = cardTexture.width + cardMargin;
     const cardHeight = cardTexture.height + cardMargin;
-    const offsetX = (+this.sys.game.config.width - cardWidth * CARD_COLS) / 2;
-    const offsetY = (+this.sys.game.config.height - cardHeight * CARD_ROWS) / 2;
+    const offsetX =
+      (+this.sys.game.config.width - cardWidth * CARD_COLS) / 2 + cardWidth / 2;
+    const offsetY =
+      (+this.sys.game.config.height - cardHeight * CARD_ROWS) / 2 +
+      cardHeight / 2;
 
     for (let row = 0; row < CARD_ROWS; row++) {
       for (let col = 0; col < CARD_COLS; col++) {
