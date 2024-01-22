@@ -6,3 +6,10 @@ body {
 canvas {
   width: 100%;
 }
+
+.fontPreloadBlock {
+  font-family: "Comic Neue";
+  position: absolute;
+  top: -100px;
+  content: " ";
+}

@@ -10,6 +10,7 @@ export class MainScene extends Phaser.Scene {
   cards: Array<Card> = [];
   openedCard: Card | null = null;
   openedPairsCardCount: number = 0;
+  timeoutText: Phaser.GameObjects.Text | null = null;
 
   constructor() {
     super({ key: "main" });
@@ -27,8 +28,16 @@ export class MainScene extends Phaser.Scene {
 
   create(): void {
     this.createBackground();
+    this.createText();
     this.createCards();
     this.start();
+  }
+
+  createText(): void {
+    this.timeoutText = this.add.text(10, 330, "Time: 30", {
+      font: "36px Comic Neue",
+      color: "#ffffff",
+    });
   }
 
   initCards(): void {
