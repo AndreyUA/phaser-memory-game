@@ -16,8 +16,6 @@ export class MainScene extends Phaser.Scene {
 
   constructor() {
     super({ key: "main" });
-
-    this.timeout = timeout;
   }
 
   preload(): void {
@@ -55,8 +53,15 @@ export class MainScene extends Phaser.Scene {
   }
 
   onTimerTick(): void {
-    this.timeout--;
     this.timeoutText!.setText(`Time: ${this.timeout}`);
+
+    if (this.timeout <= 0) {
+      this.start();
+
+      return;
+    }
+
+    this.timeout--;
   }
 
   initCards(): void {
@@ -71,6 +76,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   start(): void {
+    this.timeout = timeout;
     this.openedCard = null;
     this.openedPairsCardCount = 0;
     this.initCards();
