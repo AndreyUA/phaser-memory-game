@@ -2,6 +2,7 @@ import * as Phaser from "phaser";
 
 import { Card } from "../gameObjects/Card";
 import { CARDS_ARRAY } from "../constants/cardsArray";
+import { timeout } from "../constants/timeout";
 
 const CARD_ROWS = 2;
 const CARD_COLS = 5;
@@ -11,9 +12,12 @@ export class MainScene extends Phaser.Scene {
   openedCard: Card | null = null;
   openedPairsCardCount: number = 0;
   timeoutText: Phaser.GameObjects.Text | null = null;
+  timeout: number = 0;
 
   constructor() {
     super({ key: "main" });
+
+    this.timeout = timeout;
   }
 
   preload(): void {
@@ -27,6 +31,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.createTimer();
     this.createBackground();
     this.createText();
     this.createCards();
@@ -34,10 +39,24 @@ export class MainScene extends Phaser.Scene {
   }
 
   createText(): void {
-    this.timeoutText = this.add.text(10, 330, "Time: 30", {
+    this.timeoutText = this.add.text(10, 330, `Time: ${this.timeout}`, {
       font: "36px Comic Neue",
       color: "#ffffff",
     });
+  }
+
+  createTimer(): void {
+    this.time.addEvent({
+      delay: 1000,
+      callback: this.onTimerTick,
+      callbackScope: this,
+      loop: true,
+    });
+  }
+
+  onTimerTick(): void {
+    this.timeout--;
+    this.timeoutText!.setText(`Time: ${this.timeout}`);
   }
 
   initCards(): void {
