@@ -20,8 +20,12 @@ export class Card extends Phaser.GameObjects.Sprite {
   }
 
   closeCard(): void {
-    this.isOpened = false;
+    if (!this.isOpened) {
+      return;
+    }
+
     this.flipCard();
+    this.isOpened = false;
   }
 
   flipCard(): void {
