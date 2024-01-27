@@ -23,9 +23,9 @@ export class Card extends Phaser.GameObjects.Sprite {
     this.setInteractive({ useHandCursor: true });
   }
 
-  openCard(): void {
+  openCard(callback?: () => void): void {
     this.isOpened = true;
-    this.flipCard();
+    this.flipCard(callback);
   }
 
   closeCard(): void {
@@ -37,19 +37,19 @@ export class Card extends Phaser.GameObjects.Sprite {
     this.isOpened = false;
   }
 
-  flipCard(): void {
+  flipCard(callback?: () => void): void {
     this.scene.tweens.add({
       targets: this,
       scaleX: 0,
       ease: "Linear",
       duration: 200,
       onComplete: () => {
-        this.showCard();
+        this.showCard(callback);
       },
     });
   }
 
-  showCard(): void {
+  showCard(callback?: () => void): void {
     this.setTexture(this.isOpened ? `card${this.cardId}` : "card");
 
     this.scene.tweens.add({
@@ -57,6 +57,9 @@ export class Card extends Phaser.GameObjects.Sprite {
       scaleX: 1,
       ease: "Linear",
       duration: 200,
+      onComplete: () => {
+        callback?.();
+      },
     });
   }
 

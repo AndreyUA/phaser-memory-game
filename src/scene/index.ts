@@ -146,7 +146,6 @@ export class MainScene extends Phaser.Scene {
       "gameobjectdown",
       (_event: Phaser.Input.Pointer, card: Phaser.GameObjects.Sprite) => {
         this.onCardClicked(this.input.activePointer, card);
-        this.checkIfGameIsFinished();
       },
       this
     );
@@ -187,7 +186,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     // Open the card
-    card.openCard();
+    card.openCard(this.checkIfGameIsFinished.bind(this));
   }
 
   checkIfGameIsFinished(): void {
