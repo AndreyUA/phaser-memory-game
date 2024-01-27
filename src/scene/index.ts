@@ -12,7 +12,8 @@ export class MainScene extends Phaser.Scene {
   openedCard: Card | null = null;
   openedPairsCardCount: number = 0;
   timeoutText: Phaser.GameObjects.Text | null = null;
-  timeout: number = 0;
+  timeout: number = timeout;
+  sounds: Record<string, Phaser.Sound.WebAudioSound> = {};
 
   constructor() {
     super({ key: "main" });
@@ -26,6 +27,12 @@ export class MainScene extends Phaser.Scene {
     this.load.image("card3", "/card3.png");
     this.load.image("card4", "/card4.png");
     this.load.image("card5", "/card5.png");
+
+    this.load.audio("card", "/sounds/card.mp3");
+    this.load.audio("complete", "/sounds/complete.mp3");
+    this.load.audio("success", "/sounds/success.mp3");
+    this.load.audio("theme", "/sounds/theme.mp3");
+    this.load.audio("timeout", "/sounds/timeout.mp3");
   }
 
   create(): void {
@@ -33,7 +40,21 @@ export class MainScene extends Phaser.Scene {
     this.createBackground();
     this.createText();
     this.createCards();
+    this.createSounds();
     this.start();
+  }
+
+  createSounds(): void {
+    this.sound.add("card");
+    this.sound.add("complete");
+    this.sound.add("success");
+    this.sound.add("theme");
+    this.sound.add("timeout");
+
+    this.sound.play("theme", {
+      loop: true,
+      volume: 0.03,
+    });
   }
 
   createText(): void {
@@ -56,6 +77,7 @@ export class MainScene extends Phaser.Scene {
     this.timeoutText!.setText(`Time: ${this.timeout}`);
 
     if (this.timeout <= 0) {
+      this.sound.play("timeout");
       this.start();
 
       return;
@@ -96,14 +118,14 @@ export class MainScene extends Phaser.Scene {
     this.input.on(
       "gameobjectdown",
       (_event: Phaser.Input.Pointer, card: Phaser.GameObjects.Sprite) => {
-        this.onCardLicked(this.input.activePointer, card);
+        this.onCardClicked(this.input.activePointer, card);
         this.checkIfGameIsFinished();
       },
       this
     );
   }
 
-  onCardLicked(
+  onCardClicked(
     _pointer: Phaser.Input.Pointer,
     card: Phaser.GameObjects.Sprite
   ): void {
@@ -117,6 +139,8 @@ export class MainScene extends Phaser.Scene {
       return;
     }
 
+    this.sound.play("card");
+
     // If there is no saved and opened card before, open the card
     if (!this.openedCard) {
       this.openedCard = card;
@@ -129,6 +153,7 @@ export class MainScene extends Phaser.Scene {
     if (this.openedCard.cardId === card.cardId) {
       this.openedCard = null;
       this.openedPairsCardCount++;
+      this.sound.play("success");
     } else {
       this.openedCard.closeCard();
       this.openedCard = card;
@@ -140,6 +165,7 @@ export class MainScene extends Phaser.Scene {
 
   checkIfGameIsFinished(): void {
     if (this.openedPairsCardCount === CARDS_ARRAY.length) {
+      this.sound.play("complete");
       this.start();
     }
   }
