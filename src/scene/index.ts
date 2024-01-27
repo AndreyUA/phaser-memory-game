@@ -14,6 +14,7 @@ export class MainScene extends Phaser.Scene {
   timeoutText: Phaser.GameObjects.Text | null = null;
   timeout: number = timeout;
   sounds: Record<string, Phaser.Sound.WebAudioSound> = {};
+  timer: Phaser.Time.TimerEvent | null = null;
 
   constructor() {
     super({ key: "main" });
@@ -65,7 +66,7 @@ export class MainScene extends Phaser.Scene {
   }
 
   createTimer(): void {
-    this.time.addEvent({
+    this.timer = this.time.addEvent({
       delay: 1000,
       callback: this.onTimerTick,
       callbackScope: this,
@@ -76,9 +77,10 @@ export class MainScene extends Phaser.Scene {
   onTimerTick(): void {
     this.timeoutText!.setText(`Time: ${this.timeout}`);
 
-    if (this.timeout <= 0) {
+    if (this.timeout <= 0 && this.timer) {
+      this.timer.paused = true;
       this.sound.play("timeout");
-      this.start();
+      this.restart();
 
       return;
     }
@@ -101,10 +103,29 @@ export class MainScene extends Phaser.Scene {
     });
   }
 
+  restart(): void {
+    let id: number = 0;
+    const restartCallback = () => {
+      ++id;
+      if (id >= this.cards.length) {
+        this.start();
+      }
+    };
+
+    this.cards.forEach((card) => {
+      card.moveCard(
+        this.sys.canvas.width + card.position.x,
+        this.sys.canvas.height + card.position.y,
+        restartCallback
+      );
+    });
+  }
+
   start(): void {
     this.timeout = timeout;
     this.openedCard = null;
     this.openedPairsCardCount = 0;
+    this.timer!.paused = false;
     this.initCards();
     this.showCards();
   }
@@ -171,7 +192,7 @@ export class MainScene extends Phaser.Scene {
   checkIfGameIsFinished(): void {
     if (this.openedPairsCardCount === CARDS_ARRAY.length) {
       this.sound.play("complete");
-      this.start();
+      this.restart();
     }
   }
 

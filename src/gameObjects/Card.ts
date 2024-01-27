@@ -6,7 +6,7 @@ export interface CardData {
   delay: number;
 }
 
-const INITIAL_COORDINATES: CardData = { x: -100, y: -100, delay: 0 };
+export const INITIAL_COORDINATES: CardData = { x: -100, y: -100, delay: 0 };
 
 export class Card extends Phaser.GameObjects.Sprite {
   cardId: number;
@@ -66,14 +66,17 @@ export class Card extends Phaser.GameObjects.Sprite {
     this.setPosition(INITIAL_COORDINATES.x, INITIAL_COORDINATES.y);
   }
 
-  moveCard(): void {
+  moveCard(x?: number, y?: number, callback?: () => void): void {
     this.scene.tweens.add({
       targets: this,
-      x: this.position.x,
-      y: this.position.y,
+      x: x ?? this.position.x,
+      y: y ?? this.position.y,
       delay: this.position.delay,
       ease: "Linear",
       duration: 300,
+      onComplete: () => {
+        callback?.();
+      },
     });
   }
 }
