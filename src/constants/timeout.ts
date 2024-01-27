@@ -1,1 +1,1 @@
-export const timeout = 30;
+export const timeout = 60;

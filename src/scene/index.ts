@@ -1,6 +1,6 @@
 import * as Phaser from "phaser";
 
-import { Card } from "../gameObjects/Card";
+import { Card, CardData } from "../gameObjects/Card";
 import { CARDS_ARRAY } from "../constants/cardsArray";
 import { timeout } from "../constants/timeout";
 
@@ -91,9 +91,13 @@ export class MainScene extends Phaser.Scene {
 
     this.cards.forEach((card) => {
       const position = positions.pop()!;
+      card.init(position.x, position.y, position.delay);
+    });
+  }
 
-      card.closeCard();
-      card.setPosition(position.x, position.y);
+  showCards(): void {
+    this.cards.forEach((card) => {
+      card.moveCard();
     });
   }
 
@@ -102,6 +106,7 @@ export class MainScene extends Phaser.Scene {
     this.openedCard = null;
     this.openedPairsCardCount = 0;
     this.initCards();
+    this.showCards();
   }
 
   createBackground(): void {
@@ -170,8 +175,8 @@ export class MainScene extends Phaser.Scene {
     }
   }
 
-  getCardPositions(): Array<{ x: number; y: number }> {
-    const positions: Array<{ x: number; y: number }> = [];
+  getCardPositions(): Array<CardData> {
+    const positions: Array<CardData> = [];
     const cardMargin = 4;
     const cardTexture = this.textures.get("card").getSourceImage();
     const cardWidth = cardTexture.width + cardMargin;
@@ -182,11 +187,14 @@ export class MainScene extends Phaser.Scene {
       (+this.sys.game.config.height - cardHeight * CARD_ROWS) / 2 +
       cardHeight / 2;
 
+    let delayIndex = 0;
+
     for (let row = 0; row < CARD_ROWS; row++) {
       for (let col = 0; col < CARD_COLS; col++) {
         positions.push({
           x: offsetX + col * cardWidth,
           y: offsetY + row * cardHeight,
+          delay: delayIndex++ * 100,
         });
       }
     }

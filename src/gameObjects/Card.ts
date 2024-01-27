@@ -1,12 +1,21 @@
 import * as Phaser from "phaser";
 
+export interface CardData {
+  x: number;
+  y: number;
+  delay: number;
+}
+
+const INITIAL_COORDINATES: CardData = { x: -100, y: -100, delay: 0 };
+
 export class Card extends Phaser.GameObjects.Sprite {
   cardId: number;
   scene: Phaser.Scene;
   isOpened: boolean = false;
+  position: CardData = INITIAL_COORDINATES;
 
   constructor(scene: Phaser.Scene, cardId: number) {
-    super(scene, 0, 0, "card");
+    super(scene, INITIAL_COORDINATES.x, INITIAL_COORDINATES.y, "card");
     this.scene = scene;
     this.scene.add.existing(this);
     this.cardId = cardId;
@@ -48,6 +57,23 @@ export class Card extends Phaser.GameObjects.Sprite {
       scaleX: 1,
       ease: "Linear",
       duration: 200,
+    });
+  }
+
+  init(x: number, y: number, delay: number): void {
+    this.position = { x, y, delay };
+    this.closeCard();
+    this.setPosition(INITIAL_COORDINATES.x, INITIAL_COORDINATES.y);
+  }
+
+  moveCard(): void {
+    this.scene.tweens.add({
+      targets: this,
+      x: this.position.x,
+      y: this.position.y,
+      delay: this.position.delay,
+      ease: "Linear",
+      duration: 300,
     });
   }
 }
