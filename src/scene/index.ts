@@ -94,6 +94,7 @@ export class MainScene extends Phaser.Scene {
     this.cards.forEach((card) => {
       const position = positions.pop()!;
       card.init(position.x, position.y, position.delay);
+      card.depth = position.delay;
     });
   }
 
